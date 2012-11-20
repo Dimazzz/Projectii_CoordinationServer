@@ -3,5 +3,4 @@ Projectii Coordination Server
 
 ##Requires
 - Netty
-- JABI
-
+- JABI (https://github.com/yau-ref/jabi)
