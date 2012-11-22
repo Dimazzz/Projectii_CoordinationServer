@@ -13,10 +13,12 @@ public class CoordinationServer {
 
     private final int incomingPort;
     private final SessionsManager sessionManager;
+    private final DataStorage dataStorage;
 
     private CoordinationServer(int incomingPort) {
         this.incomingPort = incomingPort;
         this.sessionManager = new SessionsManager();
+        this.dataStorage = new DataStorage();
     }
 
     private void run() {
@@ -30,7 +32,7 @@ public class CoordinationServer {
                 ChannelPipeline channelPipeline = Channels.pipeline();
 
                 channelPipeline.addLast("Protocol decoder", new ProtocolDecoder());
-                channelPipeline.addLast("Logic", new Logic(sessionManager));
+                channelPipeline.addLast("Logic", new Logic(sessionManager, dataStorage));
                 channelPipeline.addLast("Protocol encoder", new ProtocolEncoder());
                 return channelPipeline;
             }

@@ -14,12 +14,14 @@ import static org.projii.serverside.cs.CoordinationServerResponses.ERROR;
 class Logic extends SimpleChannelHandler {
 
     private final SessionsManager sessionsManager;
+    private final DataStorage dataStorage;
     private long userid;
 
-    public Logic(SessionsManager sessionsManager) {
+    public Logic(SessionsManager sessionsManager, DataStorage dataStorage) {
         System.out.println("sessionsManager = [" + sessionsManager + "]");
         this.userid = -1;
         this.sessionsManager = sessionsManager;
+        this.dataStorage = dataStorage;
     }
 
     @Override
@@ -38,8 +40,9 @@ class Logic extends SimpleChannelHandler {
 
     private BSONDocument processRequest(BSONDocument document) {
         int requestType = (Integer) document.get("type");
-        switch (requestType) {
-            case AUTHORIZATION:
+
+        if (userid < 0) {
+            if (requestType == AUTHORIZATION) {
                 System.out.println("[Authorization]");
 
                 String username = (String) document.get("login");
@@ -55,14 +58,21 @@ class Logic extends SimpleChannelHandler {
                 }
 
                 return new BSONDocument().add("type", AUTHORIZATION_RESULT).add("result", false);
+            }
+        }
+
+        switch (requestType) {
             case GET_MY_SHIPS_FULL:
             case GET_MY_SHIPS:
+                dataStorage.getUserShips(userid);
                 break;
             case GET_MY_SHIP_FULL:
             case GET_MY_SHIP:
+                dataStorage.getUserShips(userid);
+                //???
                 break;
-
             case GET_GAMES:
+                dataStorage.getGames();
             case JOIN_GAME:
                 break;
             case LOGOUT:
@@ -74,7 +84,8 @@ class Logic extends SimpleChannelHandler {
 
                 return null;
         }
-        System.out.println("[UNK]");
+
+        System.out.println("[ERROR]");
         return new BSONDocument().add("type", ERROR);
     }
 }
