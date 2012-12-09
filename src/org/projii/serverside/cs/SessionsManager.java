@@ -1,35 +1,55 @@
 package org.projii.serverside.cs;
 
-import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 class SessionsManager {
 
     private final List<User> authorizedUsers = new LinkedList<>();
+    private final DataStorage dataStorage;
+
+    public SessionsManager(DataStorage dataStorage) {
+        this.dataStorage = dataStorage;
+    }
 
     public boolean isAuthorized(String username) {
         return find(username) != null;
     }
 
-    public boolean logIn(String username, ByteBuffer password) {
-        return username != null && authorizedUsers.add(new User(username, new Random().nextLong()));
-    }
-
-    public void logOut(long userid) {
-        User u = find(userid);
-        if (u == null) {
-            //throw new UserNotAuthorizedException(userid);
+    public boolean logIn(String username, String password) {
+        if (username == null) {
+            return false;
         }
-        authorizedUsers.remove(u);
+        System.out.println(username);
+        UserInfo userInfo = dataStorage.getUserInfo(username);
+
+
+        if (userInfo == null || !userInfo.getPassword().equals(password)) {
+            return false;
+        }
+
+        authorizedUsers.add(new User(username, userInfo.getId()));
+
+        return true;
     }
 
-    public long getUserId(String username) {
-        return find(username).userid;
+    public void logOut(int userid) {
+        User u = find(userid);
+        if (u != null) {
+            authorizedUsers.remove(u);
+        }
     }
 
-    private User find(long userid) {
+    public int getUserId(String username) {
+        User u = find(username);
+        if(u != null){
+            return u.userid;
+        }
+
+        return -1;
+    }
+
+    private User find(int userid) {
         for (User u : authorizedUsers) {
             if (u.userid == userid) {
                 return u;
@@ -49,9 +69,9 @@ class SessionsManager {
 
     private class User {
         public final String username;
-        public final long userid;
+        public final int userid;
 
-        private User(String username, long userid) {
+        private User(String username, int userid) {
             this.username = username;
             this.userid = userid;
         }

@@ -1,11 +1,20 @@
 package org.projii.serverside.cs;
 
-/**
- * Created with IntelliJ IDEA.
- * User: cyou
- * Date: 11/28/12
- * Time: 1:48 AM
- * To change this template use File | Settings | File Templates.
- */
+
+import org.projii.commons.space.Map;
+import org.projii.commons.spaceship.Spaceship;
+import org.projii.commons.spaceship.SpaceshipModel;
+
+import java.util.List;
+
 public interface DataStorage {
+    public UserInfo getUserInfo(int userid);
+
+    public UserInfo getUserInfo(String login);
+
+    public List<Spaceship> getUserSpaceships(int userid);
+
+    public List<GameInfo> getGames();
+
+    public SpaceshipModel getSpaceshipModel(int modelid);
 }

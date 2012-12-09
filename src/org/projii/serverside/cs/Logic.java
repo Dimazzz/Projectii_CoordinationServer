@@ -5,8 +5,6 @@ import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 
-import java.nio.ByteBuffer;
-
 import static org.projii.serverside.cs.CoordinationServerRequests.*;
 import static org.projii.serverside.cs.CoordinationServerResponses.AUTHORIZATION_RESULT;
 import static org.projii.serverside.cs.CoordinationServerResponses.ERROR;
@@ -14,11 +12,10 @@ import static org.projii.serverside.cs.CoordinationServerResponses.ERROR;
 class Logic extends SimpleChannelHandler {
 
     private final SessionsManager sessionsManager;
-    private final DataStorage dataStorage;
-    private long userid;
+    private final BasicDataStorage dataStorage;
+    private int userid;
 
-    public Logic(SessionsManager sessionsManager, DataStorage dataStorage) {
-        System.out.println("sessionsManager = [" + sessionsManager + "]");
+    public Logic(SessionsManager sessionsManager, BasicDataStorage dataStorage) {
         this.userid = -1;
         this.sessionsManager = sessionsManager;
         this.dataStorage = dataStorage;
@@ -39,6 +36,9 @@ class Logic extends SimpleChannelHandler {
     }
 
     private BSONDocument processRequest(BSONDocument document) {
+
+        System.out.println("Processing request");
+
         int requestType = (Integer) document.get("type");
 
         if (userid < 0) {
@@ -46,46 +46,48 @@ class Logic extends SimpleChannelHandler {
                 System.out.println("[Authorization]");
 
                 String username = (String) document.get("login");
-                ByteBuffer password = (ByteBuffer) document.get("password");
+                String password = (String) document.get("password");
 
                 if (sessionsManager.isAuthorized(username)) {
                     return new BSONDocument().add("type", AUTHORIZATION_RESULT).add("result", true);
                 }
 
                 if (sessionsManager.logIn(username, password)) {
-                    this.userid = sessionsManager.getUserId(username);
-                    return new BSONDocument().add("type", AUTHORIZATION_RESULT).add("result", true);
+                    userid = sessionsManager.getUserId(username);
+                    if (userid >= 0) {
+                        return new BSONDocument().add("type", AUTHORIZATION_RESULT).add("result", true);
+                    }
                 }
 
                 return new BSONDocument().add("type", AUTHORIZATION_RESULT).add("result", false);
             }
+
+        } else {
+            switch (requestType) {
+                case GET_MY_SHIPS_FULL:
+                case GET_MY_SHIPS:
+                    dataStorage.getUserSpaceships(userid);
+                    break;
+                case GET_MY_SHIP_FULL:
+                case GET_MY_SHIP:
+                    dataStorage.getUserSpaceships(userid);
+                    //???
+                    break;
+                case GET_GAMES:
+                    dataStorage.getGames();
+                case JOIN_GAME:
+                    break;
+                case LOGOUT:
+                    System.out.println("[Logout]");
+                    if (userid != -1) {
+                        sessionsManager.logOut(userid);
+                        userid = -1;
+                    }
+
+                    return null;
+            }
         }
-
-        switch (requestType) {
-            case GET_MY_SHIPS_FULL:
-            case GET_MY_SHIPS:
-                dataStorage.getUserShips(userid);
-                break;
-            case GET_MY_SHIP_FULL:
-            case GET_MY_SHIP:
-                dataStorage.getUserShips(userid);
-                //???
-                break;
-            case GET_GAMES:
-                dataStorage.getGames();
-            case JOIN_GAME:
-                break;
-            case LOGOUT:
-                System.out.println("[Logout]");
-                if (userid != -1) {
-                    sessionsManager.logOut(userid);
-                    userid = -1;
-                }
-
-                return null;
-        }
-
-        System.out.println("[ERROR]");
+        System.out.println("Error");
         return new BSONDocument().add("type", ERROR);
     }
 }
