@@ -1,0 +1,214 @@
+package org.model.spaceship;
+
+import org.additionally.ObjectSizeSiteId;
+import org.additionally.Point;
+import org.model.weapon.Blaster;
+import org.model.weapon.Laser;
+import org.model.weapon.Weapon;
+
+
+public class Spaceship extends ObjectSizeSiteId {
+/*
+ Строение корабля
+----------------------------
+- Количество HP
+- Сопротивляемость урону (Armor)
+- Количество слотов под оружие
+- Генератор
+- Движка
+- Силовое поле
+*/
+		
+//местонахожение и т.д -----------------------------------------	
+
+//внутрянняя часть -------------------------------------------------------
+	private int health;
+	private int presentHealth;
+	private int armor;
+	private int speed; //текущая скорость
+	private int id;
+	
+	public int getId() {
+		return id;
+	}
+	
+	public int getHealth(){
+		return health;
+	}
+	public int getPresentHealth(){
+		return presentHealth;
+	}
+	public int getArmor(){
+		return armor;
+	}
+	public int getSpeed(){
+		return speed;
+	}
+	public void setSpeed(int speed){
+		this.speed = speed;
+	}
+	
+	public int getWeaponAmount() {
+		return WEAPON_AMOUNT;
+	}
+	
+	private SpaceshipGenerator generator;
+	private SpaceshipEngine engine;
+	private EnergyShield energyShild;
+	public SpaceshipGenerator getGeneration(){
+		return generator;
+	}	
+	public  SpaceshipEngine getEngine(){
+		return engine;
+	}	
+	public EnergyShield getEnergyShild(){
+		return energyShild;
+	}
+	
+	
+	//private List<Weapon> weapList;
+	private final int WEAPON_AMOUNT;
+	private Weapon[] weapMas;;
+	
+	public Weapon[] getWeapMas() {
+		return weapMas;
+	}
+
+	public Spaceship(int id, int health, int armor, SpaceshipGenerator generator, SpaceshipEngine engine, EnergyShield energyShild, 
+			int length, int width, int WEAPON_AMOUNT, Weapon[] weapMas){
+		this.id = id;
+		this.health = health;
+		this.armor = armor;
+		this.generator = generator;
+		this.engine = engine;
+		this.energyShild = energyShild;
+		setLength(length);
+		setWidth(width);
+		this.WEAPON_AMOUNT = WEAPON_AMOUNT;
+		this.weapMas = weapMas;
+	}
+	
+	//просто так
+	public Spaceship(int id, int health, int armor, SpaceshipGenerator generator, SpaceshipEngine engine, EnergyShield energyShild, 
+			int length, int width, Laser weapon1, Laser weapon2, Blaster weapon3, Blaster weapon4 ){
+		this.id = id;
+		this.health = health;
+		this.armor = armor;
+		this.generator = generator;
+		this.engine = engine;
+		this.energyShild = energyShild;
+		setLength(length);
+		setWidth(width);
+		this.WEAPON_AMOUNT = 4;
+		this.weapMas[1] = weapon1;
+		this.weapMas[2] = weapon2;
+		this.weapMas[3] = weapon3;
+		this.weapMas[4] = weapon4;
+	}
+	 
+	public void Fire (){     // стреляем только тогда, когда хватает энергии
+		for (int i=0; i<=WEAPON_AMOUNT - 1; i++){	
+			if (generator.getPresentCount() >= weapMas[i].getBullet().getConsumeEnergy()){
+				weapMas[i].fire(getSite(), getRotation());
+				generator.UseEnergy(weapMas[i].getBullet().getConsumeEnergy());
+			}
+		}
+	}
+	
+	public void Move(Point p, int rotation){   //местонахождение (принимается из активити)
+		setSite(p);
+		setRotation(rotation);
+	}
+	
+	public void DamageMe(int damage){			   //Нанесение урона. 
+		if (energyShild.getPresentCount() > 0){
+			energyShild.Damages(damage);
+		} 
+		else {
+			health -= damage - armor; 
+		}
+		energyShild.CreateDowload();
+	}
+	
+	public void forTimer(){                 
+		energyShild.Regeneration();   // реген щита
+		generator.Regeneration();
+		for (int i=0; i<=WEAPON_AMOUNT - 1; i++){	
+				weapMas[i].Dowload();			 // кулДаун Оружия
+		}
+		//полет пули.
+	}
+	
+	public Boolean equals(Spaceship ship){
+		Boolean result = true;
+		if (id != ship.getId())
+			return false;
+		if (health != ship.getHealth())
+			return false;
+		if (armor != ship.getArmor())
+			return false;
+		if (this.getLength() != ship.getLength())
+			return false;
+		if (this.getWidth() != ship.getWidth())
+			return false;
+		if (WEAPON_AMOUNT != ship.getWeaponAmount())
+			return false;
+		if (this.generator.getId() != ship.getGeneration().getId())
+			return false;
+		if (this.generator.getCount() != ship.getGeneration().getCount())
+			return false;
+		if (this.generator.getRegeneration() != ship.getGeneration().getRegeneration())
+			return false;
+		if (this.engine.getId() != ship.getEngine().getId())
+			return false;
+		if (this.engine.getMaxSpeed() != ship.getEngine().getMaxSpeed())
+			return false;
+		if (this.engine.getSpeedUp() != ship.getEngine().getSpeedUp())
+			return false;
+		if (this.engine.getHandleability() != ship.getEngine().getHandleability())
+			return false;
+		if (this.energyShild.getId() != ship.getEnergyShild().getId())
+			return false;
+		if (this.energyShild.getMaxCount() != ship.getEnergyShild().getMaxCount())
+			return false;
+		if (this.energyShild.getRegeneration() != ship.getEnergyShild().getRegeneration())
+			return false;
+		if (this.energyShild.Time() != ship.getEnergyShild().Time())
+			return false;
+		Weapon[] new_weapMas = ship.getWeapMas();
+		for (int i = 0; i < weapMas.length; i++){
+			if (weapMas[i].getId() != new_weapMas[i].getId())
+				return false;
+			if (weapMas[i].getCd() != new_weapMas[i].getCd())
+				return false;
+			if (weapMas[i].getRate() != new_weapMas[i].getRate())
+				return false;
+			if (weapMas[i].getBullet().getSpeed() != new_weapMas[i].getBullet().getSpeed())
+				return false;
+			if (weapMas[i].getBullet().getDamage() != new_weapMas[i].getBullet().getDamage())
+				return false;
+			if (weapMas[i].getBullet().getConsumeEnergy() != new_weapMas[i].getBullet().getConsumeEnergy())
+				return false;
+			if (weapMas[i].getBullet().getRange() != new_weapMas[i].getBullet().getRange())
+				return false;
+			if (weapMas[i].getBullet().getLength() != new_weapMas[i].getBullet().getLength())
+				return false;
+			if (weapMas[i].getBullet().getWidth() != new_weapMas[i].getBullet().getWidth())
+				return false;
+		}
+		return result;
+	}
+	 /*
+	  *  Metods Основные
+	  *  1) Move 
+	  *  2) Rotation
+	  *  3) Fire (из всех пушек)
+	  *  
+	  *  дополнительные(в планах на дальнейшее)
+	  *  1) переключение режима огня 
+	  *  2) Ракеты
+	  *  3) Мины
+	  */
+
+
+}

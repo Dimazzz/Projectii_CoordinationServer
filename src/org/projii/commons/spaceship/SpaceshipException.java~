@@ -1,0 +1,6 @@
+package org.model.spaceship;
+
+public class SpaceshipException{
+	
+
+}

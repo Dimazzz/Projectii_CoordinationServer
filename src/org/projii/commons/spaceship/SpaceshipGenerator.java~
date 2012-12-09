@@ -1,0 +1,45 @@
+package org.model.spaceship;
+
+public class SpaceshipGenerator{
+/*
+ * Генератор
+---------------------------
+- Максимальное кол-во
+- Регенерация
+ */
+	private int maxCount;
+	private int presentCount;
+	
+	private int regeneration;
+	
+	private int id;
+	
+	public int getId() {
+		return id;
+	}
+	
+	public int getCount(){
+		return maxCount;
+	}
+	public int getPresentCount(){
+		return presentCount;
+	}
+	public int getRegeneration(){
+		return regeneration;
+	}
+	
+	public SpaceshipGenerator(int id, int maxCount, int regeneration){
+		this.id = id;
+		this.maxCount = maxCount; presentCount = this.maxCount;
+		this.regeneration = regeneration;
+	}
+	//============================================================================= 	
+	public void UseEnergy(int use){
+		presentCount = presentCount - use; 
+	}
+	
+	//for timer
+	public void Regeneration(){
+		presentCount = presentCount + regeneration;
+	}
+}
