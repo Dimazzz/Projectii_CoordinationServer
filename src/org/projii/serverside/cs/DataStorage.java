@@ -1,6 +1,7 @@
 package org.projii.serverside.cs;
 
 
+import org.projii.commons.GameInfo;
 import org.projii.commons.space.Map;
 import org.projii.commons.spaceship.Spaceship;
 import org.projii.commons.spaceship.SpaceshipModel;
@@ -14,7 +15,4 @@ public interface DataStorage {
 
     public List<Spaceship> getUserSpaceships(int userid);
 
-    public List<GameInfo> getGames();
-
-    public SpaceshipModel getSpaceshipModel(int modelid);
 }

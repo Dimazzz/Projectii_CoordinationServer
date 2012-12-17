@@ -3,77 +3,127 @@ package org.projii.serverside.cs;
 import java.util.LinkedList;
 import java.util.List;
 
-class SessionsManager {
+public class SessionsManager {
 
-    private final List<User> authorizedUsers = new LinkedList<>();
+    private final List<UserSession> authorizedUsers = new LinkedList<>();
     private final DataStorage dataStorage;
+    private int lastSession;
 
     public SessionsManager(DataStorage dataStorage) {
         this.dataStorage = dataStorage;
+        this.lastSession = 0;
+    }
+
+    private synchronized int generateSessionId() {
+        return lastSession++;
     }
 
     public boolean isAuthorized(String username) {
-        return find(username) != null;
+        return findByUsername(username) != null;
     }
 
-    public boolean logIn(String username, String password) {
+    public SessionInfo logIn(String username, String password) {
         if (username == null) {
-            return false;
+            return null;
         }
-        System.out.println(username);
+
         UserInfo userInfo = dataStorage.getUserInfo(username);
 
-
         if (userInfo == null || !userInfo.getPassword().equals(password)) {
-            return false;
+            return null;
         }
 
-        authorizedUsers.add(new User(username, userInfo.getId()));
+        UserSession userSession = new UserSession(username, userInfo.getId(), generateSessionId());
+        authorizedUsers.add(userSession);
 
-        return true;
+        return new SessionInfo(userSession.getUserId(), userSession.getSessionId());
     }
 
-    public void logOut(int userid) {
-        User u = find(userid);
+    public int getSessionId(int userId) {
+        return getSessionId(findByUserId(userId));
+    }
+
+    public int getSessionId(String username) {
+        return getSessionId(findByUsername(username));
+    }
+
+    private int getSessionId(UserSession userSession) {
+        return userSession == null ? -1 : userSession.getSessionId();
+    }
+
+    public void logOut(int userId) {
+        UserSession u = findByUserId(userId);
         if (u != null) {
             authorizedUsers.remove(u);
         }
     }
 
     public int getUserId(String username) {
-        User u = find(username);
-        if(u != null){
-            return u.userid;
+        UserSession u = findByUsername(username);
+        if (u != null) {
+            return u.getUserId();
         }
 
         return -1;
     }
 
-    private User find(int userid) {
-        for (User u : authorizedUsers) {
-            if (u.userid == userid) {
+    public SessionInfo getSessionInfo(int sessionId) {
+        UserSession sessionInfo = findBySessionId(sessionId);
+        return sessionInfo == null ? null : sessionInfo.getSessionInfo();
+    }
+
+    private UserSession findByUserId(int userId) {
+        for (UserSession u : authorizedUsers) {
+            if (u.getUserId() == userId) {
                 return u;
             }
         }
         return null;
     }
 
-    private User find(String username) {
-        for (User u : authorizedUsers) {
-            if (u.username.equals(username)) {
+    private UserSession findByUsername(String username) {
+
+        for (UserSession u : authorizedUsers) {
+            if (u.getUsername().equals(username)) {
                 return u;
             }
         }
         return null;
     }
 
-    private class User {
-        public final String username;
-        public final int userid;
+    private UserSession findBySessionId(int sessionId) {
 
-        private User(String username, int userid) {
+        for (UserSession u : authorizedUsers) {
+            if (u.getSessionId() == sessionId) {
+                return u;
+            }
+        }
+        return null;
+    }
+
+    private class UserSession {
+        private final String username;
+        private final SessionInfo sessionInfo;
+
+        private UserSession(String username, int userId, int sessionId) {
             this.username = username;
-            this.userid = userid;
+            this.sessionInfo = new SessionInfo(userId, sessionId);
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public int getUserId() {
+            return sessionInfo.userId;
+        }
+
+        public int getSessionId() {
+            return sessionInfo.sessionId;
+        }
+
+        public SessionInfo getSessionInfo() {
+            return sessionInfo;
         }
     }
 }
