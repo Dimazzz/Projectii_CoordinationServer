@@ -1,6 +1,8 @@
 import junit.framework.JUnit4TestAdapter;
 import junit.framework.TestCase;
+import org.jai.BSON.BSONDecoder;
 import org.jai.BSON.BSONDocument;
+import org.jai.BSON.BSONEncoder;
 import org.projii.commons.net.CoordinationServerResponses;
 import org.projii.commons.spaceship.Spaceship;
 import org.projii.commons.spaceship.SpaceshipModel;
@@ -44,7 +46,8 @@ public class GetMyShipsRequestHandlerTests extends TestCase {
 
     public void testGetMyShipsRequestHandler() {
         GetMysSpaceshipsRequestHandler handler = new GetMysSpaceshipsRequestHandler(dataStorage);
-        BSONDocument response = handler.handle(null, sessionInfo);
+        BSONDocument preResponse = handler.handle(null, sessionInfo);
+        BSONDocument response = BSONDecoder.decode(BSONEncoder.encode(preResponse));
 
         int type = (int) response.get("type");
         assertTrue("Response type should be SHIPS_FULL_INFO", type == CoordinationServerResponses.SHIPS_FULL_INFO);

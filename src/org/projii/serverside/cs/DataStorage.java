@@ -1,10 +1,7 @@
 package org.projii.serverside.cs;
 
 
-import org.projii.commons.GameInfo;
-import org.projii.commons.space.Map;
 import org.projii.commons.spaceship.Spaceship;
-import org.projii.commons.spaceship.SpaceshipModel;
 
 import java.util.List;
 
