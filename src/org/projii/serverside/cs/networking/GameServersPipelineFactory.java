@@ -6,19 +6,18 @@ import org.jboss.netty.channel.Channels;
 import org.projii.serverside.cs.DataStorage;
 import org.projii.serverside.cs.GamesManager;
 import org.projii.serverside.cs.SessionsManager;
-import org.projii.serverside.cs.networking.ChannelHandlers.ClientServiceLogic;
 import org.projii.serverside.cs.networking.ChannelHandlers.ProtocolDecoder;
 import org.projii.serverside.cs.networking.ChannelHandlers.ProtocolEncoder;
 
-public class ClientsPipelineFactory implements ChannelPipelineFactory {
+public class GameServersPipelineFactory implements ChannelPipelineFactory {
 
-    private final int clientsIncomingPort;
+    private final int gameServersIncomingPort;
     private final SessionsManager sessionManager;
     private final DataStorage dataStorage;
     private final GamesManager gamesManager;
 
-    public ClientsPipelineFactory(int clientsIncomingPort, SessionsManager sessionManager, DataStorage dataStorage, GamesManager gamesManager) {
-        this.clientsIncomingPort = clientsIncomingPort;
+    public GameServersPipelineFactory(int gameServersIncomingPort, SessionsManager sessionManager, DataStorage dataStorage, GamesManager gamesManager) {
+        this.gameServersIncomingPort = gameServersIncomingPort;
         this.sessionManager = sessionManager;
         this.dataStorage = dataStorage;
         this.gamesManager = gamesManager;
@@ -29,7 +28,6 @@ public class ClientsPipelineFactory implements ChannelPipelineFactory {
     public ChannelPipeline getPipeline() throws Exception {
         ChannelPipeline channelPipeline = Channels.pipeline();
         channelPipeline.addLast("Protocol decoder", new ProtocolDecoder());
-        channelPipeline.addLast("ClientServiceLogic", new ClientServiceLogic(sessionManager, dataStorage, gamesManager));
         channelPipeline.addLast("Protocol encoder", new ProtocolEncoder());
         return channelPipeline;
     }

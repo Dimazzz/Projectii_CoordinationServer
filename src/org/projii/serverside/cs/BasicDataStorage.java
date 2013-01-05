@@ -37,7 +37,7 @@ public class BasicDataStorage implements DataStorage {
         this.database = database;
         this.username = username;
         this.password = password;
-        this.connectionURL = new StringBuilder("jdbc:postgresql://").append(host).append('/').append(database).toString();
+        this.connectionURL = "jdbc:postgresql://" + host + '/' + database;
     }
 
     public boolean connect() throws ClassNotFoundException, SQLException {

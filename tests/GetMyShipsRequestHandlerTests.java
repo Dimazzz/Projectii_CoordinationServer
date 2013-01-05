@@ -30,9 +30,7 @@ public class GetMyShipsRequestHandlerTests extends TestCase {
         this.dataStorage = new BasicDataStorage("192.168.56.100", "projectiidb", "projectii", "p5o73Ct3");
         try {
             this.dataStorage.connect();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
         int userId = 0;

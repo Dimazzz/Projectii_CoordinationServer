@@ -2,7 +2,6 @@ package org.projii.serverside.cs.requesthandlers;
 
 import org.jai.BSON.BSONArray;
 import org.jai.BSON.BSONDocument;
-import org.projii.commons.TimeLogger;
 import org.projii.commons.spaceship.Spaceship;
 import org.projii.commons.spaceship.weapon.Weapon;
 import org.projii.serverside.cs.DataStorage;
@@ -39,7 +38,6 @@ public class GetMysSpaceshipsRequestHandler implements RequestHandler {
         List<Integer> usedEngineModels = new LinkedList<>();
         List<Integer> usedGeneratorModels = new LinkedList<>();
         List<Integer> usedShieldModels = new LinkedList<>();
-
 
         for (Spaceship spaceship : userSpaceships) {
             if (!usedModels.contains(spaceship.getModel().id)) {
