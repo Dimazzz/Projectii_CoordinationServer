@@ -1,4 +1,4 @@
-package org.projii.serverside.cs.networking.ChannelHandlers;
+package org.projii.serverside.cs.networking.channelHandlers;
 
 import org.jai.BSON.BSONDecoder;
 import org.jboss.netty.buffer.ChannelBuffer;
