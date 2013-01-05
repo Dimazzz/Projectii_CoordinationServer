@@ -1,4 +1,4 @@
-package org.projii.serverside.cs;
+package org.projii.serverside.cs.networking.ChannelHandlers;
 
 import org.jai.BSON.BSONDecoder;
 import org.jboss.netty.buffer.ChannelBuffer;
@@ -9,7 +9,7 @@ import org.projii.commons.TimeLogger;
 
 import java.nio.ByteBuffer;
 
-class ProtocolDecoder extends FrameDecoder {
+public class ProtocolDecoder extends FrameDecoder {
     @Override
     protected Object decode(ChannelHandlerContext channelHandlerContext, Channel channel, ChannelBuffer channelBuffer) throws Exception {
         TimeLogger.d("ProtocolDecoder: ", "I'v started decoding a message");

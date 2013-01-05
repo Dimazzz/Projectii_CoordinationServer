@@ -1,15 +1,20 @@
-package org.projii.serverside.cs;
+package org.projii.serverside.cs.networking.ChannelHandlers;
 
 import org.jai.BSON.BSONDocument;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 import org.projii.commons.TimeLogger;
+import org.projii.serverside.cs.DataStorage;
+import org.projii.serverside.cs.GamesManager;
+import org.projii.serverside.cs.SessionInfo;
+import org.projii.serverside.cs.SessionsManager;
 import org.projii.serverside.cs.requesthandlers.*;
 
 import static org.projii.commons.net.CoordinationServerRequests.*;
 
-class Logic extends SimpleChannelHandler {
+public class ClientServiceLogic extends SimpleChannelHandler {
+
 
     private final SessionsManager sessionsManager;
     private final DataStorage dataStorage;
@@ -21,11 +26,10 @@ class Logic extends SimpleChannelHandler {
     private GetMysSpaceshipsRequestHandler getMySpaceshipsHandler;
     private AuthorizationRequestHandler authorizationRequestHandler;
 
-    Logic(SessionsManager sessionsManager, DataStorage dataStorage, GamesManager gamesManager) {
+    public ClientServiceLogic(SessionsManager sessionsManager, DataStorage dataStorage, GamesManager gamesManager) {
         this.sessionsManager = sessionsManager;
         this.dataStorage = dataStorage;
         this.gamesManager = gamesManager;
-
         this.sessionInfo = null;
         this.logoutRequestHandler = new LogoutRequestHandler();
         this.getGamesRequestHandler = new GetGamesRequestHandler(gamesManager);
@@ -36,26 +40,26 @@ class Logic extends SimpleChannelHandler {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-
-        TimeLogger.d("Logic: ", "Message received");
+        TimeLogger.d("ClientServiceLogic: ", "Message received");
         BSONDocument requestDocument = (BSONDocument) e.getMessage();
-        TimeLogger.d("Logic: ", "I'v got request document");
+        TimeLogger.d("ClientServiceLogic: ", "I'v got request document");
         BSONDocument responseDocument = processRequest(requestDocument);
-        TimeLogger.d("Logic: ", "I'v proceed request");
+
+        TimeLogger.d("ClientServiceLogic: ", "I'v proceed request");
 
         if (responseDocument == null) {
             ctx.getChannel().close();
-            TimeLogger.d("Logic: ", "I'v closed connection");
+            TimeLogger.d("ClientServiceLogic: ", "I'v closed connection");
         } else {
-            TimeLogger.d("Logic: ", "I'm sending response down stream");
+            TimeLogger.d("ClientServiceLogic: ", "I'm sending response down stream");
             ctx.getChannel().write(responseDocument);
-            TimeLogger.d("Logic: ", "Response has been send");
+            TimeLogger.d("ClientServiceLogic: ", "Response has been send");
         }
     }
 
     private BSONDocument processRequest(BSONDocument request) {
         int requestType = (Integer) request.get("type");
-        TimeLogger.d("Logic: ", "I'v start request processing for", "client #", "" + (sessionInfo == null ? -1 : sessionInfo.userId));
+        TimeLogger.d("ClientServiceLogic: ", "I'v start request processing for", "client #", "" + (sessionInfo == null ? -1 : sessionInfo.sessionId));
 
         if (sessionInfo == null && requestType == AUTHORIZATION) {
             authorizationRequestHandler = new AuthorizationRequestHandler(sessionsManager);

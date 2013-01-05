@@ -1,57 +1,30 @@
 package org.projii.serverside.cs;
 
-import org.jboss.netty.bootstrap.ServerBootstrap;
-import org.jboss.netty.channel.ChannelPipeline;
-import org.jboss.netty.channel.ChannelPipelineFactory;
-import org.jboss.netty.channel.Channels;
-import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
+import org.projii.serverside.cs.networking.Networking;
 
-import java.net.InetSocketAddress;
-import java.util.concurrent.Executors;
+import java.sql.SQLException;
 
 public class CoordinationServer {
+    public static void main(String[] args) {
+        int clientsIncomingPort = 6666;
+        int gameServerIncomingPort = 6667;
+        String databaseAdress = "192.168.56.100";
+        String databaseName = "projectiidb";
+        String databaseLogin = "projectii";
+        String databasePassword = "p5o73Ct3";
 
-    private final int incomingPort;
-    private final SessionsManager sessionManager;
-    private final BasicDataStorage dataStorage;
-    private final GamesManager gamesManager;
+        BasicDataStorage dataStorage = new BasicDataStorage(databaseAdress, databaseName, databaseLogin, databasePassword);
 
-    private CoordinationServer(int incomingPort) {
-        this.incomingPort = incomingPort;
-        this.dataStorage = new BasicDataStorage("192.168.56.100", "projectiidb", "projectii", "p5o73Ct3");
-        this.sessionManager = new SessionsManager(dataStorage);
-        this.gamesManager = new GamesManager();
+        try {
+            dataStorage.connect();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        Networking networking = new Networking(
+                clientsIncomingPort, gameServerIncomingPort, dataStorage, new SessionsManager(dataStorage), new GamesManager());
+
+        networking.run();
     }
-
-    private void run() {
-        ServerBootstrap bootstrap = new ServerBootstrap(
-                new NioServerSocketChannelFactory(
-                        Executors.newCachedThreadPool(),
-                        Executors.newCachedThreadPool()));
-
-        bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
-            public ChannelPipeline getPipeline() throws Exception {
-                ChannelPipeline channelPipeline = Channels.pipeline();
-
-                channelPipeline.addLast("Protocol decoder", new ProtocolDecoder());
-
-                dataStorage.connect();
-                channelPipeline.addLast("Logic", new Logic(sessionManager, dataStorage, gamesManager));
-                channelPipeline.addLast("Protocol encoder", new ProtocolEncoder());
-                return channelPipeline;
-            }
-        });
-
-
-        bootstrap.bind(new InetSocketAddress(incomingPort));
-    }
-
-
-    public static void main(String... args) {
-        int port = 6666;
-
-        CoordinationServer coordinationServer = new CoordinationServer(port);
-        coordinationServer.run();
-    }
-
 }
