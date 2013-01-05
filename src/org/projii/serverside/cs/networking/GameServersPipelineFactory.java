@@ -6,8 +6,8 @@ import org.jboss.netty.channel.Channels;
 import org.projii.serverside.cs.DataStorage;
 import org.projii.serverside.cs.GamesManager;
 import org.projii.serverside.cs.SessionsManager;
-import org.projii.serverside.cs.networking.ChannelHandlers.ProtocolDecoder;
-import org.projii.serverside.cs.networking.ChannelHandlers.ProtocolEncoder;
+import org.projii.serverside.cs.networking.channelHandlers.ProtocolDecoder;
+import org.projii.serverside.cs.networking.channelHandlers.ProtocolEncoder;
 
 public class GameServersPipelineFactory implements ChannelPipelineFactory {
 
