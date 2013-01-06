@@ -83,22 +83,21 @@ public class BasicDataStorage implements DataStorage {
         try {
             spaceshipModels = new HashMap<>();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM spaceship_models");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM pii_sship_mdls");
             while (resultSet.next()) {
 
                 int id = resultSet.getInt("id");
-                int weaponAmount = resultSet.getInt("id");
-                int health = resultSet.getInt("hp");
-                int armor = resultSet.getInt("hp");
                 String modelName = resultSet.getString("name");
-                int width = resultSet.getInt("hp");
-                int length = resultSet.getInt("hp");
-                int master = resultSet.getInt("master");
+                int weaponSlotNumber = resultSet.getInt("wpn_slot_num");
+                int health = resultSet.getInt("hp");
+                int armor = resultSet.getInt("armor");
+                int width = resultSet.getInt("width");
+                int length = resultSet.getInt("length");
 
-                spaceshipModels.put(id, new SpaceshipModel(id, modelName, health, armor, weaponAmount, length, width));
+                spaceshipModels.put(id, new SpaceshipModel(id, modelName, health, armor, weaponSlotNumber, length, width));
             }
         } catch (SQLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
     }
 
@@ -109,19 +108,19 @@ public class BasicDataStorage implements DataStorage {
         try {
             engines = new HashMap<>();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM engine_models");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM pii_ngn_mdls");
             while (resultSet.next()) {
 
                 int id = resultSet.getInt("id");
-                int maxSpeed = resultSet.getInt("maxSpeed");
-                int acceleration = resultSet.getInt("acceleration");
-                int maneuverability = resultSet.getInt("maneuverability");
                 String name = resultSet.getString("name");
+                int maxSpeed = resultSet.getInt("max_spd");
+                int acceleration = resultSet.getInt("accl");
+                int maneuverability = resultSet.getInt("mbility");
 
                 engines.put(id, new SpaceshipEngine(id, maxSpeed, acceleration, maneuverability, name));
             }
         } catch (SQLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
     }
 
@@ -132,12 +131,12 @@ public class BasicDataStorage implements DataStorage {
         try {
             energyGeneratorModels = new HashMap<>();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM energy_generator_models");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM pii_egen_mdls");
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
-                int maxEnergyLevel = resultSet.getInt("maxEnergyLevel");
-                int regenerationSpeed = resultSet.getInt("regenerationSpeed");
                 String name = resultSet.getString("name");
+                int maxEnergyLevel = resultSet.getInt("max_nrg_lvl");
+                int regenerationSpeed = resultSet.getInt("reg_spd");
                 energyGeneratorModels.put(id, new EnergyGeneratorModel(id, name, maxEnergyLevel, regenerationSpeed));
             }
 
@@ -153,17 +152,18 @@ public class BasicDataStorage implements DataStorage {
         try {
             energyShieldModels = new HashMap<>();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM energy_shield_models");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM pii_eshld_mdls");
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
-                int maxEnergyLevel = resultSet.getInt("maxHPLevel");
-                int regenerationSpeed = resultSet.getInt("regenerationSpeed");
-                int regenerationDelay = resultSet.getInt("regenerationDelay");
                 String name = resultSet.getString("name");
+                int maxEnergyLevel = resultSet.getInt("max_nrg_lvl");
+                int regenerationSpeed = resultSet.getInt("reg_spd");
+                int regenerationDelay = resultSet.getInt("reg_dly");
+
                 energyShieldModels.put(id, new EnergyShieldModel(id, name, maxEnergyLevel, regenerationSpeed, regenerationDelay));
             }
         } catch (SQLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
     }
 
@@ -174,26 +174,25 @@ public class BasicDataStorage implements DataStorage {
         try {
             weaponModels = new HashMap<>();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM weapon_models");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM pii_wpn_mdls");
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
-                int type = resultSet.getInt("rate");
-                int bulletSpeed = resultSet.getInt("bulletspeed");
-                int damage = resultSet.getInt("demage");
-                int cooldown = resultSet.getInt("energyconsumption");
-                int range = resultSet.getInt("distance");
-                int distance = resultSet.getInt("range");
-                int energyConsumption = resultSet.getInt("cooldown");
-                int rate = resultSet.getInt("type");
+                int type = resultSet.getInt("type");
+                int rate = resultSet.getInt("rate");
+                int projectileSpeed = resultSet.getInt("pspeed");
+                int damage = resultSet.getInt("damage");
+                int energyConsumption = resultSet.getInt("nrgcons");
+                int distance = resultSet.getInt("distance");
+                int range = resultSet.getInt("range");
+                int cooldown = resultSet.getInt("cd");
 
-                weaponModels.put(id, new WeaponModel(id, name, rate, type, bulletSpeed, damage, energyConsumption, distance, range, cooldown));
+                weaponModels.put(id, new WeaponModel(id, name, rate, type, projectileSpeed, damage, energyConsumption, distance, range, cooldown));
             }
         } catch (SQLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
     }
-
 
     private SpaceshipEngine getEngineModel(int modelId) {
         if (!isConnected()) {
@@ -211,9 +210,9 @@ public class BasicDataStorage implements DataStorage {
         if (engine == null) {
             if (ps_selectEngineModelWhereId == null) {
                 try {
-                    ps_selectEngineModelWhereId = connection.prepareStatement("SELECT * FROM engine_models WHERE id = ?");
+                    ps_selectEngineModelWhereId = connection.prepareStatement("SELECT * FROM pii_ngn_mdls WHERE id = ?");
                 } catch (SQLException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    e.printStackTrace();
                 }
             }
             try {
@@ -222,10 +221,11 @@ public class BasicDataStorage implements DataStorage {
                 resultSet.next();
 
                 int id = resultSet.getInt("id");
-                int maxSpeed = resultSet.getInt("maxSpeed");
-                int acceleration = resultSet.getInt("acceleration");
-                int maneuverability = resultSet.getInt("maneuverability");
                 String name = resultSet.getString("name");
+                int maxSpeed = resultSet.getInt("max_spd");
+                int acceleration = resultSet.getInt("accl");
+                int maneuverability = resultSet.getInt("mbility");
+
 
                 engine = new SpaceshipEngine(id, maxSpeed, acceleration, maneuverability, name);
                 engines.put(id, engine);
@@ -240,7 +240,7 @@ public class BasicDataStorage implements DataStorage {
     public UserInfo getUserInfo(int userId) {
         try {
             if (ps_selectUserWhereId == null) {
-                ps_selectUserWhereId = connection.prepareStatement("SELECT * FROM gamers WHERE id = ?");
+                ps_selectUserWhereId = connection.prepareStatement("SELECT * FROM pii_gamers WHERE id = ?");
             }
             ps_selectUserWhereId.setInt(1, userId);
             ResultSet resultSet = ps_selectUserWhereId.executeQuery();
@@ -255,7 +255,7 @@ public class BasicDataStorage implements DataStorage {
     public UserInfo getUserInfo(String username) {
         try {
             if (ps_selectUserWhereEmail == null) {
-                ps_selectUserWhereEmail = connection.prepareStatement("SELECT * FROM gamers WHERE email = ?");
+                ps_selectUserWhereEmail = connection.prepareStatement("SELECT * FROM pii_gamers WHERE email = ?");
             }
             ps_selectUserWhereEmail.setString(1, username);
             ResultSet resultSet = ps_selectUserWhereEmail.executeQuery();
@@ -271,9 +271,9 @@ public class BasicDataStorage implements DataStorage {
         if (resultSet.next()) {
             int id = resultSet.getInt("id");
             String email = resultSet.getString("email");
-            String password = resultSet.getString("password");
+            String password = resultSet.getString("passwd");
             String nickname = resultSet.getString("nickname");
-            int experience = resultSet.getInt("experience");
+            int experience = resultSet.getInt("exp");
 
             return new UserInfo(id, email, password, nickname, experience);
         }
@@ -288,7 +288,7 @@ public class BasicDataStorage implements DataStorage {
 
         if (ps_selectSpaceshipWhereOwner == null) {
             try {
-                ps_selectSpaceshipWhereOwner = connection.prepareStatement("SELECT * FROM spaceships WHERE owner = ?");
+                ps_selectSpaceshipWhereOwner = connection.prepareStatement("SELECT * FROM pii_sships WHERE owner = ?");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -302,13 +302,13 @@ public class BasicDataStorage implements DataStorage {
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 int owner = resultSet.getInt("owner");
-                int spaceshipModelId = resultSet.getInt("model");
-                int engineId = resultSet.getInt("engine");
-                int energyGeneratorModelId = resultSet.getInt("energygenerator");
-                int energyShieldModelId = resultSet.getInt("energyshield");
-                int firstWeaponModelId = resultSet.getInt("firstweapon");
-                int secondWeaponModelId = resultSet.getInt("secondweapon");
-                int thirdWeaponModelId = resultSet.getInt("thirdweapon");
+                int spaceshipModelId = resultSet.getInt("mdl");
+                int engineId = resultSet.getInt("ngn");
+                int energyGeneratorModelId = resultSet.getInt("nrg_gen");
+                int energyShieldModelId = resultSet.getInt("nrg_shld");
+                int firstWeaponModelId = resultSet.getInt("wpn_a");
+                int secondWeaponModelId = resultSet.getInt("wpn_b");
+                int thirdWeaponModelId = resultSet.getInt("wpn_c");
 
                 SpaceshipModel model = spaceshipModels.get(spaceshipModelId);
                 EnergyGenerator generator = new EnergyGenerator(energyGeneratorModels.get(energyGeneratorModelId));

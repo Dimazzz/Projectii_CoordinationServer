@@ -32,7 +32,7 @@ public class DataStorageTests extends TestCase {
     public void testGetUserInfo() {
         UserInfo userInfo = dataStorage.getUserInfo(0);
         assertTrue(userInfo != null);
-        assertEquals("Unexpected nickname", "LolLer", userInfo.getNickname());
+        assertEquals("Unexpected nickname", "Loller", userInfo.getNickname());
 
         userInfo = dataStorage.getUserInfo(1);
         assertTrue(userInfo != null);
@@ -52,7 +52,7 @@ public class DataStorageTests extends TestCase {
         assertTrue("Spaceships list shouldn't be null", spaceshipList != null);
         assertTrue("Spaceships list shouldn't be empty", !spaceshipList.isEmpty());
         for (Spaceship spaceship : spaceshipList) {
-            assertEquals("Unexpected spaceship id", 0, spaceship.getId());
+            assertEquals("Unexpected spaceship id", 3, spaceship.getId());
             assertTrue("Spaceships model shouldn't be null", spaceship.getModel() != null);
             assertEquals("Unexpected model id", 0, spaceship.getModel().id);
 

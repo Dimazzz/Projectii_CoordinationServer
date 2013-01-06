@@ -103,7 +103,7 @@ public class GetMysSpaceshipsRequestHandler implements RequestHandler {
                                     add("name", w.getModel().getName()).
                                     add("rate", w.getModel().getRate()).
                                     add("type", w.getModel().getType()).
-                                    add("bulletSpeed", w.getModel().getBulletSpeed()).
+                                    add("bulletSpeed", w.getModel().getProjectileSpeed()).
                                     add("damage", w.getModel().getDamage()).
                                     add("energyConsumption", w.getModel().getEnergyConsumption()).
                                     add("distance", w.getModel().getDistance()).

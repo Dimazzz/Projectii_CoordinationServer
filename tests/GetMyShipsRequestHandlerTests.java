@@ -58,7 +58,7 @@ public class GetMyShipsRequestHandlerTests extends TestCase {
         BSONDocument ship = (BSONDocument) spaceships.get("0");
 
         int spaceshipId = (int) ship.get("id");
-        assertEquals("Unexpected ship id", 0, spaceshipId);
+        assertEquals("Unexpected ship id", 3, spaceshipId);
 
         int modelId = (int) ship.get("modelId");
         SpaceshipModel spaceshipModel = getSpaceshipModel(response);
