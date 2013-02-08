@@ -47,6 +47,12 @@ CREATE SEQUENCE pii_sships_pk_seq
   NO CYCLE
   NO MAXVALUE;
 
+CREATE SEQUENCE pii_gsessions_pk_seq 
+  minvalue 0
+  increment by 1
+  cycle
+  no maxvalue;
+
 CREATE TABLE pii_gamers (
   id integer
     CONSTRAINT pii_gamers_pk PRIMARY KEY
@@ -277,3 +283,12 @@ VALUES (0, 0, 0, 0, 0, 1, 2, 2);
 
 INSERT INTO pii_sships (owner, mdl, nrg_gen, ngn, nrg_shld, wpn_a, wpn_b, wpn_c)
 VALUES (1, 1, 0, 1, 0, 2, 1, 1);
+
+CREATE TABLE pii_gsessions(
+  id integer 
+    CONSTRAINT pii_gsessions_pk PRIMARY KEY
+    CONSTRAINT pii_gsessions_pk DEFAULT nextval('pii_gsessions_pk_seq'),
+  gamer_id integer
+    CONSTRAINT pii_gsessions_gi_u UNIQUE
+    CONSTRAINT pii_gsessions_gi_fk REFERENCES pii_gamers(id)
+);
