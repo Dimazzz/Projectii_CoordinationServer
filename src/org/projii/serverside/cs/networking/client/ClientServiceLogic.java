@@ -1,4 +1,4 @@
-package org.projii.serverside.cs.networking.channelHandlers;
+package org.projii.serverside.cs.networking.client;
 
 import org.jai.BSON.BSONDocument;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -17,8 +17,6 @@ public class ClientServiceLogic extends SimpleChannelHandler {
 
 
     private final SessionsManager sessionsManager;
-    private final DataStorage dataStorage;
-    private final GamesManager gamesManager;
     private SessionInfo sessionInfo;
     private LogoutRequestHandler logoutRequestHandler;
     private GetGamesRequestHandler getGamesRequestHandler;
@@ -28,8 +26,6 @@ public class ClientServiceLogic extends SimpleChannelHandler {
 
     public ClientServiceLogic(SessionsManager sessionsManager, DataStorage dataStorage, GamesManager gamesManager) {
         this.sessionsManager = sessionsManager;
-        this.dataStorage = dataStorage;
-        this.gamesManager = gamesManager;
         this.sessionInfo = null;
         this.logoutRequestHandler = new LogoutRequestHandler();
         this.getGamesRequestHandler = new GetGamesRequestHandler(gamesManager);

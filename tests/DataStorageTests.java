@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class DataStorageTests extends TestCase {
-    DataStorage dataStorage;
+    private DataStorage dataStorage;
 
     public static junit.framework.Test suite() {
         return new JUnit4TestAdapter(DataStorageTests.class);

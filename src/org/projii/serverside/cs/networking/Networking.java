@@ -8,6 +8,8 @@ import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 import org.projii.serverside.cs.DataStorage;
 import org.projii.serverside.cs.GamesManager;
 import org.projii.serverside.cs.SessionsManager;
+import org.projii.serverside.cs.networking.client.ClientsPipelineFactory;
+import org.projii.serverside.cs.networking.gameserver.GameServersPipelineFactory;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.ExecutorService;

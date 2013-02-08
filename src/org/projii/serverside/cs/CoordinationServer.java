@@ -21,7 +21,6 @@ public class CoordinationServer {
             e.printStackTrace();
         }
 
-
         Networking networking = new Networking(
                 clientsIncomingPort, gameServerIncomingPort, dataStorage, new SessionsManager(dataStorage), new GamesManager());
 

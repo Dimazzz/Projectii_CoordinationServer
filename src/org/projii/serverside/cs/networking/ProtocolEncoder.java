@@ -1,4 +1,4 @@
-package org.projii.serverside.cs.networking.channelHandlers;
+package org.projii.serverside.cs.networking;
 
 import org.jai.BSON.BSONDocument;
 import org.jai.BSON.BSONEncoder;

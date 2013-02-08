@@ -14,8 +14,6 @@ import java.util.List;
 public class BasicDataStorage implements DataStorage {
 
     private String connectionURL;
-    private String host;
-    private String database;
     private String username;
     private String password;
     private Connection connection;
@@ -33,8 +31,6 @@ public class BasicDataStorage implements DataStorage {
 
 
     public BasicDataStorage(String host, String database, String username, String password) {
-        this.host = host;
-        this.database = database;
         this.username = username;
         this.password = password;
         this.connectionURL = "jdbc:postgresql://" + host + '/' + database;

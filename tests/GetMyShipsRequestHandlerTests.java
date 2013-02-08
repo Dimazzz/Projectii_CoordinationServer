@@ -14,8 +14,6 @@ import org.projii.serverside.cs.SessionInfo;
 import org.projii.serverside.cs.requesthandlers.GetMysSpaceshipsRequestHandler;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class GetMyShipsRequestHandlerTests extends TestCase {
@@ -98,12 +96,9 @@ public class GetMyShipsRequestHandlerTests extends TestCase {
 
 
     private Weapon[] getWeapons(BSONDocument response) {
-
-        List<WeaponModel> weaponModelList = new ArrayList<>();
         BSONDocument weaponModels = (BSONDocument) response.get("weapons");
 
         assertEquals("Unexpected count of unique weapons models", 2, weaponModels.size());
-
 
         Weapon[] weapons = new Weapon[3];
         for (int i = 0; i < 2; i++) {
