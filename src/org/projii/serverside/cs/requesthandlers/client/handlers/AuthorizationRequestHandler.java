@@ -1,4 +1,4 @@
-package org.projii.serverside.cs.requesthandlers;
+package org.projii.serverside.cs.requesthandlers.client.handlers;
 
 import org.jai.BSON.BSONDocument;
 import org.projii.serverside.cs.SessionInfo;
@@ -6,7 +6,7 @@ import org.projii.serverside.cs.SessionsManager;
 
 import static org.projii.commons.net.CoordinationServerResponses.AUTHORIZATION_RESULT;
 
-public class AuthorizationRequestHandler implements RequestHandler {
+public class AuthorizationRequestHandler implements ClientRequestHandler {
 
     private SessionsManager sessionsManager;
 
@@ -31,7 +31,7 @@ public class AuthorizationRequestHandler implements RequestHandler {
             return new BSONDocument().
                     add("type", AUTHORIZATION_RESULT).
                     add("result", true).
-                    add("sessionId", sessionInfo.sessionId);
+                    add("sessionId", sessionInfo.getSessionId());
         }
 
         return new BSONDocument().add("type", AUTHORIZATION_RESULT).add("result", false);

@@ -1,4 +1,4 @@
-package org.projii.serverside.cs.requesthandlers;
+package org.projii.serverside.cs.requesthandlers.client.handlers;
 
 
 import org.jai.BSON.BSONArray;
@@ -11,7 +11,7 @@ import org.projii.serverside.cs.SessionInfo;
 
 import java.util.List;
 
-public class GetGamesRequestHandler implements RequestHandler {
+public class GetGamesRequestHandler implements ClientRequestHandler {
 
     private GamesManager gamesManager;
 

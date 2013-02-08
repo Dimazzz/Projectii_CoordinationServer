@@ -115,11 +115,11 @@ public class SessionsManager {
         }
 
         public int getUserId() {
-            return sessionInfo.userId;
+            return sessionInfo.getUserId();
         }
 
         public int getSessionId() {
-            return sessionInfo.sessionId;
+            return sessionInfo.getSessionId();
         }
 
         public SessionInfo getSessionInfo() {

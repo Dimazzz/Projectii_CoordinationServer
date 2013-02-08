@@ -1,4 +1,4 @@
-package org.projii.serverside.cs.requesthandlers;
+package org.projii.serverside.cs.requesthandlers.client.handlers;
 
 import org.jai.BSON.BSONArray;
 import org.jai.BSON.BSONDocument;
@@ -12,7 +12,9 @@ import java.util.List;
 
 import static org.projii.commons.net.CoordinationServerResponses.SHIPS_FULL_INFO;
 
-public class GetMysSpaceshipsRequestHandler implements RequestHandler {
+
+//TODO: It MUST be refactored!
+public class GetMysSpaceshipsRequestHandler implements ClientRequestHandler {
     private DataStorage dataStorage;
 
     public GetMysSpaceshipsRequestHandler(DataStorage dataStorage) {
@@ -21,7 +23,7 @@ public class GetMysSpaceshipsRequestHandler implements RequestHandler {
 
     @Override
     public BSONDocument handle(BSONDocument request, SessionInfo sessionInfo) {
-        List<Spaceship> userSpaceships = dataStorage.getUserSpaceships(sessionInfo.userId);
+        List<Spaceship> userSpaceships = dataStorage.getUserSpaceships(sessionInfo.getUserId());
 
         BSONDocument response = new BSONDocument();
         response.add("type", SHIPS_FULL_INFO);
