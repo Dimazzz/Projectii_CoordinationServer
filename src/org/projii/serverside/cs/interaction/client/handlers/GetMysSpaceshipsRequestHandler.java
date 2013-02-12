@@ -1,32 +1,36 @@
-package org.projii.serverside.cs.requesthandlers.client.handlers;
+package org.projii.serverside.cs.interaction.client.handlers;
 
 import org.jai.BSON.BSONArray;
 import org.jai.BSON.BSONDocument;
+import org.jboss.netty.channel.Channel;
 import org.projii.commons.spaceship.Spaceship;
 import org.projii.commons.spaceship.weapon.Weapon;
 import org.projii.serverside.cs.DataStorage;
 import org.projii.serverside.cs.SessionInfo;
+import org.projii.serverside.cs.SessionsManager;
+import org.projii.serverside.cs.interaction.Request;
+import org.projii.serverside.cs.interaction.client.RequestHandler;
+import org.projii.serverside.cs.interaction.client.responses.ShipsInfoResponse;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.projii.commons.net.CoordinationServerResponses.SHIPS_FULL_INFO;
+public class GetMysSpaceshipsRequestHandler implements RequestHandler {
+    private final DataStorage dataStorage;
+    private final SessionsManager sessionsManager;
 
-
-//TODO: It MUST be refactored!
-public class GetMysSpaceshipsRequestHandler implements ClientRequestHandler {
-    private DataStorage dataStorage;
-
-    public GetMysSpaceshipsRequestHandler(DataStorage dataStorage) {
+    public GetMysSpaceshipsRequestHandler(DataStorage dataStorage, SessionsManager sessionsManager) {
         this.dataStorage = dataStorage;
+        this.sessionsManager = sessionsManager;
     }
 
     @Override
-    public BSONDocument handle(BSONDocument request, SessionInfo sessionInfo) {
+    public void handle(Request request, Channel channel) {
+        SessionInfo sessionInfo = sessionsManager.getSessionByChannelId(channel.getId());
         List<Spaceship> userSpaceships = dataStorage.getUserSpaceships(sessionInfo.getUserId());
-
+        ShipsInfoResponse r = new ShipsInfoResponse();
         BSONDocument response = new BSONDocument();
-        response.add("type", SHIPS_FULL_INFO);
+        Spaceship[] spaceshipsArray = (Spaceship[]) userSpaceships.toArray();
 
         BSONArray spaceships = new BSONArray();
         BSONArray spaceshipModels = new BSONArray();
@@ -113,7 +117,6 @@ public class GetMysSpaceshipsRequestHandler implements ClientRequestHandler {
                                     add("cooldown", w.getModel().getCooldown())
                     );
                 }
-
             }
 
             spaceships.add(
@@ -133,6 +136,6 @@ public class GetMysSpaceshipsRequestHandler implements ClientRequestHandler {
         response.add("generatorModels", generators);
         response.add("shieldModels", shields);
 
-        return response;
+        channel.write(response);
     }
 }

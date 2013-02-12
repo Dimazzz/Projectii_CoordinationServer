@@ -1,36 +1,41 @@
 package org.projii.serverside.cs;
 
-import org.projii.serverside.cs.requesthandlers.*;
-import org.projii.serverside.cs.requesthandlers.client.requests.*;
-import org.projii.serverside.cs.requesthandlers.gameserver.requests.GameServerRequest;
+import org.jboss.netty.channel.Channel;
+import org.projii.serverside.cs.interaction.Request;
+import org.projii.serverside.cs.interaction.client.RequestHandler;
 
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
-
 
 public class ExecutionLayer {
 
+    private final Map<Class<? extends Request>, RequestHandler> handlers;
     private final ExecutorService workers;
-    private final SessionsManager sessionManager;
-    private final DataStorage dataStorage;
-    private final GamesManager gamesManager;
 
-    public ExecutionLayer(ExecutorService workers, SessionsManager sessionManager, DataStorage dataStorage, GamesManager gamesManager) {
+    public ExecutionLayer(Map<Class<? extends Request>, RequestHandler> handlers, ExecutorService workers) {
+        this.handlers = handlers;
         this.workers = workers;
-        this.sessionManager = sessionManager;
-        this.dataStorage = dataStorage;
-        this.gamesManager = gamesManager;
     }
 
-    public void exec(AbstractRequest request, int id) {
-
-
-        workers.execute(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        });
+    public void exec(Request request, Channel channel) {
+        Runnable task = new Task(request, channel);
+        workers.execute(task);
     }
 
+    private class Task implements Runnable {
+        private final Request request;
+        private final Channel channel;
+
+        private Task(Request request, Channel channel) {
+            this.request = request;
+            this.channel = channel;
+        }
+
+        @Override
+        public void run() {
+            RequestHandler requestHandler = handlers.get(request.getClass());
+            requestHandler.handle(request, channel);
+        }
+    }
 
 }

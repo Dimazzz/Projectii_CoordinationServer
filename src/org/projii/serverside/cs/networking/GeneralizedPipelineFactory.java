@@ -9,13 +9,10 @@ import java.util.Map;
 
 public class GeneralizedPipelineFactory implements ChannelPipelineFactory {
 
-
-    private final int incomingPort;
     private final ExecutionLayer executionLayer;
     private final Map<Integer, Class> correspondenceTable;
 
-    public GeneralizedPipelineFactory(int incomingPort, ExecutionLayer executionLayer, Map<Integer, Class> correspondenceTable) {
-        this.incomingPort = incomingPort;
+    public GeneralizedPipelineFactory(ExecutionLayer executionLayer, Map<Integer, Class> correspondenceTable) {
         this.executionLayer = executionLayer;
         this.correspondenceTable = correspondenceTable;
     }
@@ -24,10 +21,10 @@ public class GeneralizedPipelineFactory implements ChannelPipelineFactory {
     public ChannelPipeline getPipeline() throws Exception {
         ChannelPipeline channelPipeline = Channels.pipeline();
         channelPipeline.addLast("Protocol decoder", new ProtocolDecoder());
-        channelPipeline.addLast("Message decoder", new MessageDecoder(correspondenceTable));
-        channelPipeline.addLast("Request handling service", new RequestHandlingService(executionLayer, 0));
-        channelPipeline.addLast("Message encoder", new MessageEncoder());
         channelPipeline.addLast("Protocol encoder", new ProtocolEncoder());
+        channelPipeline.addLast("Message decoder", new MessageDecoder(correspondenceTable));
+        channelPipeline.addLast("Message encoder", new MessageEncoder());
+        channelPipeline.addLast("Request handling service", new RequestHandlingService(executionLayer));
         return channelPipeline;
     }
 }

@@ -26,8 +26,8 @@ public class Networking {
 
         this.clientsIncomingPort = clientsIncomingPort;
         this.gameServersIncomingPort = gameServerIncomingPort;
-        clientsPipelineFactory = new GeneralizedPipelineFactory(clientsIncomingPort, executionLayer, clientRequestsCorrespondenceTable);
-        gameServersPipelineFactory = new GeneralizedPipelineFactory(clientsIncomingPort, executionLayer, gameServerRequestsCorrespondenceTable);
+        clientsPipelineFactory = new GeneralizedPipelineFactory(executionLayer, clientRequestsCorrespondenceTable);
+        gameServersPipelineFactory = new GeneralizedPipelineFactory(executionLayer, gameServerRequestsCorrespondenceTable);
     }
 
     public void run() {
