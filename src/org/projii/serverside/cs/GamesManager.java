@@ -21,4 +21,11 @@ public class GamesManager {
     public List<GameInfo> getGames() {
         return games;
     }
+
+    public GameInfo[] getGamesArray() {
+        GameInfo[] b = games.toArray(new GameInfo[games.size()]);
+        return b;
+    }
+
+
 }
