@@ -1,10 +1,14 @@
 package org.projii.serverside.cs.interaction.client.handlers;
 
-import org.jai.BSON.BSONArray;
-import org.jai.BSON.BSONDocument;
+import org.jai.BSON.BSONSerializable;
 import org.jboss.netty.channel.Channel;
 import org.projii.commons.spaceship.Spaceship;
+import org.projii.commons.spaceship.SpaceshipModel;
+import org.projii.commons.spaceship.equipment.EnergyGeneratorModel;
+import org.projii.commons.spaceship.equipment.EnergyShieldModel;
+import org.projii.commons.spaceship.equipment.SpaceshipEngine;
 import org.projii.commons.spaceship.weapon.Weapon;
+import org.projii.commons.spaceship.weapon.WeaponModel;
 import org.projii.serverside.cs.DataStorage;
 import org.projii.serverside.cs.SessionInfo;
 import org.projii.serverside.cs.SessionsManager;
@@ -12,7 +16,8 @@ import org.projii.serverside.cs.interaction.Request;
 import org.projii.serverside.cs.interaction.client.RequestHandler;
 import org.projii.serverside.cs.interaction.client.responses.ShipsInfoResponse;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class GetMysSpaceshipsRequestHandler implements RequestHandler {
@@ -28,114 +33,71 @@ public class GetMysSpaceshipsRequestHandler implements RequestHandler {
     public void handle(Request request, Channel channel) {
         SessionInfo sessionInfo = sessionsManager.getSessionByChannelId(channel.getId());
         List<Spaceship> userSpaceships = dataStorage.getUserSpaceships(sessionInfo.getUserId());
-        ShipsInfoResponse r = new ShipsInfoResponse();
-        BSONDocument response = new BSONDocument();
-        Spaceship[] spaceshipsArray = (Spaceship[]) userSpaceships.toArray();
-
-        BSONArray spaceships = new BSONArray();
-        BSONArray spaceshipModels = new BSONArray();
-        BSONArray engines = new BSONArray();
-        BSONArray generators = new BSONArray();
-        BSONArray weapons = new BSONArray();
-        BSONArray shields = new BSONArray();
-
-        List<Integer> usedModels = new LinkedList<>();
-        List<Integer> usedWeaponModels = new LinkedList<>();
-        List<Integer> usedEngineModels = new LinkedList<>();
-        List<Integer> usedGeneratorModels = new LinkedList<>();
-        List<Integer> usedShieldModels = new LinkedList<>();
+        List<SpaceshipInfo> spaceshipsInfo = new ArrayList<>(userSpaceships.size());
+        HashSet<SpaceshipModel> usedSpaceshipModels = new HashSet<>();
+        HashSet<WeaponModel> usedWeaponModels = new HashSet<>();
+        HashSet<SpaceshipEngine> usedEngineModels = new HashSet<>();
+        HashSet<EnergyGeneratorModel> usedGeneratorModels = new HashSet<>();
+        HashSet<EnergyShieldModel> usedShieldModels = new HashSet<>();
 
         for (Spaceship spaceship : userSpaceships) {
-            if (!usedModels.contains(spaceship.getModel().id)) {
-                spaceshipModels.add(
-                        new BSONDocument().
-                                add("id", spaceship.getModel().id).
-                                add("name", spaceship.getModel().name).
-                                add("health", spaceship.getModel().health).
-                                add("width", spaceship.getModel().length).
-                                add("length", spaceship.getModel().width).
-                                add("armor", spaceship.getModel().armor).
-                                add("weaponSlotCount", spaceship.getModel().weaponSlotCount)
-                );
-                usedModels.add(spaceship.getModel().id);
+            SpaceshipModel spaceshipModel = spaceship.getModel();
+            SpaceshipEngine spaceshipEngine = spaceship.getEngine();
+            EnergyGeneratorModel energyGeneratorModel = spaceship.getGenerator().getModel();
+            EnergyShieldModel energyShieldModel = spaceship.getEnergyShield().getModel();
+
+            usedSpaceshipModels.add(spaceship.getModel());
+            usedEngineModels.add(spaceshipEngine);
+            usedGeneratorModels.add(energyGeneratorModel);
+            usedShieldModels.add(energyShieldModel);
+            int i = 0;
+            int[] weaponsIds = new int[spaceship.getWeapons().length];
+            for (Weapon weapon : spaceship.getWeapons()) {
+                weaponsIds[i] = weapon.getModel().getId();
+                usedWeaponModels.add(weapon.getModel());
             }
 
-            if (!usedEngineModels.contains(spaceship.getEngine().getId())) {
-                engines.add(
-                        new BSONDocument().
-                                add("id", spaceship.getEngine().getId()).
-                                add("maneuverability", spaceship.getEngine().getManeuverability()).
-                                add("maxSpeed", spaceship.getEngine().getMaxSpeed()).
-                                add("acceleration", spaceship.getEngine().getAcceleration()).
-                                add("name", spaceship.getEngine().getName())
-                );
-                usedEngineModels.add(spaceship.getEngine().getId());
-            }
-
-            if (!usedGeneratorModels.contains(spaceship.getGenerator().getModel().id)) {
-                generators.add(
-                        new BSONDocument().
-                                add("id", spaceship.getGenerator().getModel().id).
-                                add("name", spaceship.getGenerator().getModel().name).
-                                add("maxEnergyLevel", spaceship.getGenerator().getModel().maxEnergyLevel).
-                                add("regenerationSpeed", spaceship.getGenerator().getModel().regenerationSpeed)
-                );
-
-                usedGeneratorModels.add(spaceship.getGenerator().getModel().id);
-            }
-
-            if (!usedShieldModels.contains(spaceship.getEnergyShield().getModel().id)) {
-                shields.add(
-                        new BSONDocument().
-                                add("id", spaceship.getEnergyShield().getModel().id).
-                                add("maxEnergyLevel", spaceship.getEnergyShield().getModel().maxEnergyLevel).
-                                add("name", spaceship.getEnergyShield().getModel().name).
-                                add("regenerationDelay", spaceship.getEnergyShield().getModel().regenerationDelay).
-                                add("regenerationSpeed", spaceship.getEnergyShield().getModel().regenerationSpeed)
-                );
-                usedShieldModels.add(spaceship.getEnergyShield().getModel().id);
-            }
-
-
-            BSONArray spaceshipWeapons = new BSONArray();
-            for (Weapon w : spaceship.getWeapons()) {
-                spaceshipWeapons.add(w.getModel().getId());
-
-                if (!usedWeaponModels.contains(w.getModel().getId())) {
-                    usedWeaponModels.add(w.getModel().getId());
-                    weapons.add(
-                            new BSONDocument().
-                                    add("id", w.getModel().getId()).
-                                    add("name", w.getModel().getName()).
-                                    add("rate", w.getModel().getRate()).
-                                    add("type", w.getModel().getType()).
-                                    add("bulletSpeed", w.getModel().getProjectileSpeed()).
-                                    add("damage", w.getModel().getDamage()).
-                                    add("energyConsumption", w.getModel().getEnergyConsumption()).
-                                    add("distance", w.getModel().getDistance()).
-                                    add("range", w.getModel().getRange()).
-                                    add("cooldown", w.getModel().getCooldown())
-                    );
-                }
-            }
-
-            spaceships.add(
-                    new BSONDocument().
-                            add("id", spaceship.getId()).
-                            add("modelId", spaceship.getModel().id).
-                            add("shieldId", spaceship.getEnergyShield().getModel().id).
-                            add("engineId", spaceship.getEngine().getId()).
-                            add("generatorId", spaceship.getGenerator().getModel().id).
-                            add("weapons", spaceshipWeapons));
+            spaceshipsInfo.add(
+                    new SpaceshipInfo(
+                            spaceship.getId(),
+                            spaceshipModel.id,
+                            energyShieldModel.id,
+                            spaceshipEngine.getId(),
+                            energyGeneratorModel.id,
+                            weaponsIds));
         }
 
-        response.add("spaceships", spaceships);
-        response.add("weapons", weapons);
-        response.add("spaceshipModels", spaceshipModels);
-        response.add("engineModels", engines);
-        response.add("generatorModels", generators);
-        response.add("shieldModels", shields);
-
+        ShipsInfoResponse response = new ShipsInfoResponse(
+                spaceshipsInfo,
+                usedSpaceshipModels.toArray(new SpaceshipModel[usedSpaceshipModels.size()]),
+                usedWeaponModels.toArray(new WeaponModel[usedWeaponModels.size()]),
+                usedEngineModels.toArray(new SpaceshipEngine[usedEngineModels.size()]),
+                usedGeneratorModels.toArray(new EnergyGeneratorModel[usedGeneratorModels.size()]),
+                usedShieldModels.toArray(new EnergyShieldModel[usedShieldModels.size()]));
         channel.write(response);
+    }
+
+    public class SpaceshipInfo {
+        @BSONSerializable
+        private final int id;
+        @BSONSerializable
+        private final int modelId;
+        @BSONSerializable
+        private final int shieldId;
+        @BSONSerializable
+        private final int engineId;
+        @BSONSerializable
+        private final int generatorId;
+        @BSONSerializable
+        private final int[] weapons;
+
+        SpaceshipInfo(int id, int modelId, int shieldId, int engineId, int generatorId, int[] weaponsIds) {
+            this.id = id;
+            this.modelId = modelId;
+            this.shieldId = shieldId;
+            this.engineId = engineId;
+            this.generatorId = generatorId;
+            this.weapons = weaponsIds;
+        }
     }
 }

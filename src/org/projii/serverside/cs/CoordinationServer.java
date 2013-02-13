@@ -4,7 +4,10 @@ import org.projii.commons.net.CoordinationServerRequests;
 import org.projii.serverside.cs.interaction.Request;
 import org.projii.serverside.cs.interaction.client.RequestHandler;
 import org.projii.serverside.cs.interaction.client.handlers.AuthorizationRequestHandler;
-import org.projii.serverside.cs.interaction.client.requests.AuthorizationRequest;
+import org.projii.serverside.cs.interaction.client.handlers.GetGamesRequestHandler;
+import org.projii.serverside.cs.interaction.client.handlers.GetMysSpaceshipsRequestHandler;
+import org.projii.serverside.cs.interaction.client.handlers.LogoutRequestHandler;
+import org.projii.serverside.cs.interaction.client.requests.*;
 import org.projii.serverside.cs.networking.Networking;
 
 import java.sql.SQLException;
@@ -29,10 +32,29 @@ public class CoordinationServer {
         Map<Integer, Class> gameServerRequestsCorrespondenceTable = new HashMap<>();
         Map<Integer, Class> clientRequestsCorrespondenceTable = new HashMap<>();
         clientRequestsCorrespondenceTable.put(CoordinationServerRequests.AUTHORIZATION, AuthorizationRequest.class);
+        clientRequestsCorrespondenceTable.put(CoordinationServerRequests.LOGOUT, LogoutRequest.class);
+        clientRequestsCorrespondenceTable.put(CoordinationServerRequests.GET_GAMES, GetGamesRequest.class);
+        clientRequestsCorrespondenceTable.put(CoordinationServerRequests.GET_MY_SHIPS, GetMySpaceshipsRequest.class);
+        clientRequestsCorrespondenceTable.put(CoordinationServerRequests.JOIN_GAME, JoinGameRequest.class);
+
+        ClientsSessionsManager clientsSessionsManager = new ClientsSessionsManager(dataStorage);
         Map<Class<? extends Request>, RequestHandler> handlers = new HashMap<>();
         handlers.put(
                 AuthorizationRequest.class,
-                new AuthorizationRequestHandler(new ClientsSessionsManager(dataStorage)));
+                new AuthorizationRequestHandler(clientsSessionsManager));
+        handlers.put(
+                LogoutRequest.class,
+                new LogoutRequestHandler(clientsSessionsManager));
+        handlers.put(
+                GetGamesRequest.class,
+                new GetGamesRequestHandler(new GamesManager()));
+        handlers.put(
+                GetMySpaceshipsRequest.class,
+                new GetMysSpaceshipsRequestHandler(dataStorage, clientsSessionsManager));
+//        handlers.put(
+//                JoinGameRequest.class,
+//                new AuthorizationRequestHandler(new ClientsSessionsManager(dataStorage)));
+
         ExecutionLayer executionLayer = new ExecutionLayer(handlers, Executors.newFixedThreadPool(4));
         Networking networking = new Networking(
                 clientsIncomingPort,
