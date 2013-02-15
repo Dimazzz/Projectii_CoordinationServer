@@ -2,12 +2,12 @@ package org.projii.serverside.cs.interaction.client.responses;
 
 import org.jai.BSON.BSONSerializable;
 import org.projii.commons.net.CoordinationServerResponses;
+import org.projii.commons.net.Response;
 import org.projii.commons.spaceship.SpaceshipModel;
 import org.projii.commons.spaceship.equipment.EnergyGeneratorModel;
 import org.projii.commons.spaceship.equipment.EnergyShieldModel;
 import org.projii.commons.spaceship.equipment.SpaceshipEngine;
 import org.projii.commons.spaceship.weapon.WeaponModel;
-import org.projii.serverside.cs.interaction.Response;
 import org.projii.serverside.cs.interaction.client.handlers.GetMysSpaceshipsRequestHandler;
 
 import java.util.List;

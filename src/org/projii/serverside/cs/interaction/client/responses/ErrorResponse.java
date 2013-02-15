@@ -2,7 +2,7 @@ package org.projii.serverside.cs.interaction.client.responses;
 
 import org.jai.BSON.BSONSerializable;
 import org.projii.commons.net.CoordinationServerResponses;
-import org.projii.serverside.cs.interaction.Response;
+import org.projii.commons.net.Response;
 
 public class ErrorResponse implements Response {
     @BSONSerializable

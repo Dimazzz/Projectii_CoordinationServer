@@ -1,8 +1,8 @@
 package org.projii.serverside.cs.interaction.client.handlers;
 
 import org.jboss.netty.channel.Channel;
+import org.projii.commons.net.Request;
 import org.projii.serverside.cs.SessionsManager;
-import org.projii.serverside.cs.interaction.Request;
 import org.projii.serverside.cs.interaction.client.RequestHandler;
 
 public class LogoutRequestHandler implements RequestHandler {

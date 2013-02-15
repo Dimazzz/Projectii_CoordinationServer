@@ -3,6 +3,10 @@ package org.projii.serverside.cs.networking;
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.Channels;
+import org.projii.serverside.commons.MessageDecoder;
+import org.projii.serverside.commons.MessageEncoder;
+import org.projii.serverside.commons.ProtocolDecoder;
+import org.projii.serverside.commons.ProtocolEncoder;
 import org.projii.serverside.cs.ExecutionLayer;
 
 import java.util.Map;

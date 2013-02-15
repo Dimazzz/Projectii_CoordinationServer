@@ -43,6 +43,9 @@ public class Networking {
     private Channel bind(ChannelFactory channelFactory, ChannelPipelineFactory pipelineFactory, int incomingPort) {
         ServerBootstrap serverBootstrap = new ServerBootstrap(channelFactory);
         serverBootstrap.setPipelineFactory(pipelineFactory);
+        serverBootstrap.setOption("reuseAddress", true);
+        serverBootstrap.setOption("child.tcpNoDelay", true);
+        serverBootstrap.setOption("child.keepAlive", true);
         return serverBootstrap.bind(new InetSocketAddress(incomingPort));
     }
 

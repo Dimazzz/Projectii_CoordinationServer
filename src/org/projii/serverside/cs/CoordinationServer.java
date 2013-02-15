@@ -1,7 +1,7 @@
 package org.projii.serverside.cs;
 
 import org.projii.commons.net.CoordinationServerRequests;
-import org.projii.serverside.cs.interaction.Request;
+import org.projii.commons.net.Request;
 import org.projii.serverside.cs.interaction.client.RequestHandler;
 import org.projii.serverside.cs.interaction.client.handlers.AuthorizationRequestHandler;
 import org.projii.serverside.cs.interaction.client.handlers.GetGamesRequestHandler;

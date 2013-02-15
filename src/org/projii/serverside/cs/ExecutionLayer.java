@@ -1,7 +1,7 @@
 package org.projii.serverside.cs;
 
 import org.jboss.netty.channel.Channel;
-import org.projii.serverside.cs.interaction.Request;
+import org.projii.commons.net.Request;
 import org.projii.serverside.cs.interaction.client.RequestHandler;
 
 import java.util.Map;

@@ -5,8 +5,8 @@ import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import org.projii.commons.TimeLogger;
+import org.projii.commons.net.Request;
 import org.projii.serverside.cs.ExecutionLayer;
-import org.projii.serverside.cs.interaction.Request;
 
 public class RequestHandlingService extends SimpleChannelUpstreamHandler {
 

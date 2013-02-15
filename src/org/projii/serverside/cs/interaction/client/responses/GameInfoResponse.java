@@ -3,7 +3,7 @@ package org.projii.serverside.cs.interaction.client.responses;
 import org.jai.BSON.BSONSerializable;
 import org.projii.commons.GameInfo;
 import org.projii.commons.net.CoordinationServerResponses;
-import org.projii.serverside.cs.interaction.Response;
+import org.projii.commons.net.Response;
 
 public class GameInfoResponse implements Response {
     @BSONSerializable
