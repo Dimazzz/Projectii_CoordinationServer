@@ -1,8 +1,8 @@
 package org.projii.serverside.cs;
 
 import org.projii.commons.net.CoordinationServerRequests;
-import org.projii.commons.net.Request;
-import org.projii.serverside.cs.interaction.client.RequestHandler;
+import org.projii.commons.net.InteractionMessage;
+import org.projii.serverside.commons.RequestHandler;
 import org.projii.serverside.cs.interaction.client.handlers.AuthorizationRequestHandler;
 import org.projii.serverside.cs.interaction.client.handlers.GetGamesRequestHandler;
 import org.projii.serverside.cs.interaction.client.handlers.GetMysSpaceshipsRequestHandler;
@@ -38,7 +38,7 @@ public class CoordinationServer {
         clientRequestsCorrespondenceTable.put(CoordinationServerRequests.JOIN_GAME, JoinGameRequest.class);
 
         ClientsSessionsManager clientsSessionsManager = new ClientsSessionsManager(dataStorage);
-        Map<Class<? extends Request>, RequestHandler> handlers = new HashMap<>();
+        Map<Class<? extends InteractionMessage>, RequestHandler> handlers = new HashMap<>();
         handlers.put(
                 AuthorizationRequest.class,
                 new AuthorizationRequestHandler(clientsSessionsManager));

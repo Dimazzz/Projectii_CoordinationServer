@@ -1,9 +1,9 @@
 package org.projii.serverside.cs.interaction.client.handlers;
 
 import org.jboss.netty.channel.Channel;
-import org.projii.commons.net.Request;
+import org.projii.commons.net.InteractionMessage;
+import org.projii.serverside.commons.RequestHandler;
 import org.projii.serverside.cs.SessionsManager;
-import org.projii.serverside.cs.interaction.client.RequestHandler;
 
 public class LogoutRequestHandler implements RequestHandler {
 
@@ -14,7 +14,7 @@ public class LogoutRequestHandler implements RequestHandler {
     }
 
     @Override
-    public void handle(Request request, Channel channel) {
+    public void handle(InteractionMessage request, Channel channel) {
         sessionsManager.destroySession(channel.getId());
         channel.close();
     }

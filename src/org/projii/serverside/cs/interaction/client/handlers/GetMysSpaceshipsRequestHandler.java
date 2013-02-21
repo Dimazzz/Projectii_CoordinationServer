@@ -2,7 +2,7 @@ package org.projii.serverside.cs.interaction.client.handlers;
 
 import org.jai.BSON.BSONSerializable;
 import org.jboss.netty.channel.Channel;
-import org.projii.commons.net.Request;
+import org.projii.commons.net.InteractionMessage;
 import org.projii.commons.spaceship.Spaceship;
 import org.projii.commons.spaceship.SpaceshipModel;
 import org.projii.commons.spaceship.equipment.EnergyGeneratorModel;
@@ -10,10 +10,10 @@ import org.projii.commons.spaceship.equipment.EnergyShieldModel;
 import org.projii.commons.spaceship.equipment.SpaceshipEngine;
 import org.projii.commons.spaceship.weapon.Weapon;
 import org.projii.commons.spaceship.weapon.WeaponModel;
+import org.projii.serverside.commons.RequestHandler;
 import org.projii.serverside.cs.DataStorage;
 import org.projii.serverside.cs.SessionInfo;
 import org.projii.serverside.cs.SessionsManager;
-import org.projii.serverside.cs.interaction.client.RequestHandler;
 import org.projii.serverside.cs.interaction.client.responses.ShipsInfoResponse;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class GetMysSpaceshipsRequestHandler implements RequestHandler {
     }
 
     @Override
-    public void handle(Request request, Channel channel) {
+    public void handle(InteractionMessage request, Channel channel) {
         SessionInfo sessionInfo = sessionsManager.getSessionByChannelId(channel.getId());
         List<Spaceship> userSpaceships = dataStorage.getUserSpaceships(sessionInfo.getUserId());
         List<SpaceshipInfo> spaceshipsInfo = new ArrayList<>(userSpaceships.size());

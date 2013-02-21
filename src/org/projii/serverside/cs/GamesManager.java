@@ -23,8 +23,7 @@ public class GamesManager {
     }
 
     public GameInfo[] getGamesArray() {
-        GameInfo[] b = games.toArray(new GameInfo[games.size()]);
-        return b;
+        return games.toArray(new GameInfo[games.size()]);
     }
 
 
