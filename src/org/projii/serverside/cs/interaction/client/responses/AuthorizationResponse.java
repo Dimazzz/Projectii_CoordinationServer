@@ -2,9 +2,9 @@ package org.projii.serverside.cs.interaction.client.responses;
 
 import org.jai.BSON.BSONSerializable;
 import org.projii.commons.net.CoordinationServerResponses;
-import org.projii.commons.net.Response;
+import org.projii.commons.net.InteractionMessage;
 
-public class AuthorizationResponse implements Response {
+public class AuthorizationResponse implements InteractionMessage {
 
     @BSONSerializable
     private final boolean result;

@@ -3,9 +3,9 @@ package org.projii.serverside.cs.interaction.client.responses;
 import org.jai.BSON.BSONSerializable;
 import org.projii.commons.GameInfo;
 import org.projii.commons.net.CoordinationServerResponses;
-import org.projii.commons.net.Response;
+import org.projii.commons.net.InteractionMessage;
 
-public class GameInfoResponse implements Response {
+public class GameInfoResponse implements InteractionMessage {
     @BSONSerializable
     private final GameInfo games[];
     @BSONSerializable

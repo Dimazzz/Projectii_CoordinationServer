@@ -2,7 +2,7 @@ package org.projii.serverside.cs.interaction.client.responses;
 
 import org.jai.BSON.BSONSerializable;
 import org.projii.commons.net.CoordinationServerResponses;
-import org.projii.commons.net.Response;
+import org.projii.commons.net.InteractionMessage;
 import org.projii.commons.spaceship.SpaceshipModel;
 import org.projii.commons.spaceship.equipment.EnergyGeneratorModel;
 import org.projii.commons.spaceship.equipment.EnergyShieldModel;
@@ -12,7 +12,7 @@ import org.projii.serverside.cs.interaction.client.handlers.GetMysSpaceshipsRequ
 
 import java.util.List;
 
-public class ShipsInfoResponse implements Response {
+public class ShipsInfoResponse implements InteractionMessage {
 
     @BSONSerializable
     private final int type;
