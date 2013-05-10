@@ -21,10 +21,22 @@ public class GamesManager {
     public List<GameInfo> getGames() {
         return games;
     }
-
     public GameInfo[] getGamesArray() {
         return games.toArray(new GameInfo[games.size()]);
     }
-
+    public void addGame(GameInfo gameInfo){
+    	games.add(gameInfo);
+    }
+    public void removeGame(GameInfo gameInfo){
+    	games.remove(gameInfo);
+    }
+    public GameInfo getGameById(int id){
+    	for(GameInfo gameInfo : games){
+    		if (gameInfo.gameId == id){
+    			return gameInfo;
+    		}
+    	}
+    	return null;
+    }
 
 }

@@ -9,20 +9,44 @@ import org.projii.serverside.cs.interaction.client.handlers.GetMysSpaceshipsRequ
 import org.projii.serverside.cs.interaction.client.handlers.LogoutRequestHandler;
 import org.projii.serverside.cs.interaction.client.requests.*;
 import org.projii.serverside.cs.networking.Networking;
-
+ 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
 public class CoordinationServer {
-    public static void main(String[] args) {
-        int clientsIncomingPort = 6666;
-        int gameServerIncomingPort = 6667;
-        String databaseAddress = "192.168.56.100";
-        String databaseName = "projectiidb";
-        String databaseLogin = "projectii";
-        String databasePassword = "p5o73Ct3";
+    public static void main(String[] args) throws FileNotFoundException {
+
+    	String fileName = "CoordinationServer.txt";
+        int clientsIncomingPort;
+        int gameServerIncomingPort;
+        String databaseAddress;
+        String databaseName;
+        String databaseLogin;
+        String databasePassword;
+    	try {
+            BufferedReader in = new BufferedReader(new FileReader( new File(fileName).getAbsoluteFile()));
+            try {
+                    clientsIncomingPort = new Integer(in.readLine());
+                    gameServerIncomingPort = new Integer(in.readLine());
+                    databaseAddress = in.readLine();
+                    databaseName = in.readLine();
+                    databaseLogin = in.readLine();
+                    databasePassword = in.readLine();
+            } finally {
+                in.close();
+            }
+        } catch(IOException e) {
+            throw new RuntimeException(e);
+        }
+
         BasicDataStorage dataStorage = new BasicDataStorage(databaseAddress, databaseName, databaseLogin, databasePassword);
         try {
             dataStorage.connect();
@@ -51,9 +75,6 @@ public class CoordinationServer {
         handlers.put(
                 GetMySpaceshipsRequest.class,
                 new GetMysSpaceshipsRequestHandler(dataStorage, clientsSessionsManager));
-//        handlers.put(
-//                JoinGameRequest.class,
-//                new AuthorizationRequestHandler(new ClientsSessionsManager(dataStorage)));
 
         ExecutionLayer executionLayer = new ExecutionLayer(handlers, Executors.newFixedThreadPool(4));
         Networking networking = new Networking(
